@@ -1,0 +1,183 @@
+<template>
+    <el-container>
+        <el-main>
+            <div style="margin-top: 15px;">
+                <el-form :model="searchForm" :rules="formRules" ref="searchForm">
+                    <el-form-item prop="searchContent">
+                        <el-input placeholder="请输入内容" v-model="searchForm.searchContent" class="input-with-select">
+                            <el-select v-model="select.v"
+                                       slot="prepend"
+                                       placeholder="Searching method"
+                                       style="width: 160px;">
+                                <el-option
+                                    v-for="item in options"
+                                    :key="item.k" :value="item.v" :label="item.l">
+                                </el-option>
+                            </el-select>
+                            <el-button slot="append"
+                                       icon="el-icon-search"
+                                       @click="submitForm()">
+                            </el-button>
+                        </el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div class="row" id="queryDisplay">
+                <p>Searching: {{ searchForm.searchContent }}</p>
+            </div>
+        </el-main>
+    </el-container>
+    <!-- <div class="container">
+        <div id="SearchBar">
+            <form :action="resultURL" method="get" id="form" class="form">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <input class="form-control" id="iptBar" type="text" placeholder="Search ..." v-model="searchContent" name="query">
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row" id="methodDesc">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <p>Please select a search method.</p>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row" id="methodDesc">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <p>Supported search methods:</p>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <span>
+                            <button class="btn btn-default" id="searchBtn" v-on:click="onClick($event)" name="type" value="1">Structure</button>
+                            <button class="btn btn-default" id="searchBtn" v-on:click="onClick($event)" name="type" value="2">Similarity</button>
+                            <button class="btn btn-default" id="searchBtn" v-on:click="onClick($event)" name="type" value="3">Prediction</button>
+                            <button class="btn btn-default" id="searchBtn" v-on:click="onClick($event)" name="type" value="4">Name</button>
+                        </span>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="row" id="queryDisplay">
+                    <p>Searching: {{ searchContent }}</p>
+                </div>
+            </form>
+        </div>
+    </div> -->
+</template>
+
+<script>
+import Vue from 'vue'
+import VueAxios from 'vue-axios'
+import axios from 'axios'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
+Vue.use(VueAxios, axios)
+Vue.use(ElementUI)
+axios.defaults.headers.get['Content-Type'] = 'text/plain'
+
+export default {
+    name: 'SearchBar',
+    data() {
+        return {
+            options: [
+                {k: 1, v: 1, l: 'Structure'},
+                {k: 2, v: 2, l: 'Similarity'},
+                {k: 3, v: 3, l: 'Prediction'},
+                {k: 4, v: 4, l: 'Name'}
+            ],
+            searchForm: {
+                searchContent: ''
+            },
+            resultURL: '',
+            jsonContent: '',
+            select: '',
+            formRules: {
+                searchContent: [{required: true, message: 'Not null', trigger: 'blur'}]
+            }
+        }
+    },
+    created() {
+        this.select = this.options[0]
+    },
+    methods: {
+        submitForm() {
+            let urlBase = 'http://1.117.57.232'
+            let urlFunc = 'result'
+            let query = this.searchForm.searchContent
+            let urlQuery = encodeURIComponent(query)
+            // let btnValue = e.currentTarget.getAttributeNode('value').value
+            let queryType = this.select.v
+            let url = urlBase + '/' + urlFunc + '/?query=' + urlQuery + '&type=' + queryType
+            this.resultURL = url
+            console.log(this.resultURL)
+            this.$refs.searchForm.validate((valid) => {
+                if (valid) {
+                    console.log('Success')
+                } else {
+                    console.log('Error')
+                }
+            })
+            // this.$refs['searchForm'].submitForm(() => {
+
+            // })
+            // let data = {
+            //     query: urlQuery,
+            //     type: queryType
+
+            // }
+            // let tempUrl = urlBase + '/' + urlFunc + '/?'
+            // this.axios.get({tempUrl, data}).then((res) => {
+            //     console.log(res)
+            // }).catch((err) => {
+            //     console.log(err)
+            // })
+            // this.axios({
+            //     method: 'get',
+            //     url: this.resultURL
+            // }).then((res) => {
+            //     console.log(res)
+            // }).catch((err) => {
+            //     console.log(err)
+            // })
+            // alert(btnValue)
+            // console.log(this.resultURL)
+        }
+    }
+}
+</script>
+
+<style scoped>
+/* #iptBar {
+    width: 100%;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+#searchBtn {
+    width: 20%;
+    margin-top: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
+}*/
+#queryDisplay {
+    margin-top: 10px;
+    color: azure;
+    font-size: 26px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-shadow: 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black, -1px 1px 0 black;
+}
+/* #methodDesc {
+    margin-top: 15px;
+    text-align: center;
+    color: azure;
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-shadow: 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black, -1px 1px 0 black;
+} */
+</style>
