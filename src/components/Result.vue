@@ -92,9 +92,12 @@ export default {
                         click: (event) => {
                             console.log('click::', row, rowIndex, event)
                             this.$router.push({
+                                // path: '/detail/?query=' +
+                                //        encodeURIComponent(row.canonical_substrate_smiles) +
+                                //        '&id=' + row.pubchem_cid
                                 path: '/detail/?query=' +
-                                       encodeURIComponent(row.canonical_substrate_smiles) +
-                                       '&id=' + row.pubchem_cid
+                                       encodeURIComponent(row.SMILES) +
+                                       '&id=' + row.Pubchem_CID
                             })
                         }
                     }

@@ -99,6 +99,7 @@ export default {
         this.reqId = this.$route.query.id
         this.reqQuery = this.$route.query.query
         this.resImage = 'http://1.117.57.232:8080/media/' + this.reqQuery + '.jpg'
+        // this.resImage = 'http://1.117.57.232:8080/media/' + this.SMILES + '.jpg'
     },
     mounted() {
         this.getJSON()
@@ -140,8 +141,10 @@ export default {
             }]
             this.keyArray = Object.keys(json)
             this.valueArray = Object.values(json)
-            this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
-                                this.valueArray[0] + '.jpg'
+            // this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
+            //                     this.valueArray[0] + '.jpg'
+            console.log('json: ' + json)
+            this.resImage = this.valueArray[0]
             var dataItem = {}
             /* Last element is 'ext' which contains a sub-json object.
                Resolve this element in another table */
