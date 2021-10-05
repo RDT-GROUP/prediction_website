@@ -141,14 +141,16 @@ export default {
             }]
             this.keyArray = Object.keys(json)
             this.valueArray = Object.values(json)
-            // this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
-            //                     this.valueArray[0] + '.jpg'
-            console.log('json: ' + json)
-            this.resImage = this.valueArray[0]
+            this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
+                                this.valueArray[3] + '.jpg'
+            console.log(json)
+            // this.resImage = this.valueArray[0]
             var dataItem = {}
             /* Last element is 'ext' which contains a sub-json object.
                Resolve this element in another table */
-            for (let i = 0; i < this.keyArray.length - 1; i++) {
+            /* Element before the last element is 'image' which contains
+               back-end port. It shouldn't be displayed. */
+            for (let i = 0; i < this.keyArray.length - 2; i++) {
                 dataItem = {}
                 dataItem[this.columns[0].title] = this.keyArray[i]
                 dataItem[this.columns[1].title] = this.valueArray[i]
@@ -161,6 +163,7 @@ export default {
             extDatas[this.columns[1].title] = this.valueArray[this.keyArray.length - 1]
             this.keyArray = Object.keys(extDatas['Data'][0])
             this.valueArray = []
+            console.log(extDatas)
             for (let i = 0; i < extDatas['Data'].length; i++) {
                 this.valueArray.push(Object.values(extDatas['Data'][i]))
             }
@@ -186,7 +189,9 @@ export default {
                 }
                 this.columns2.push(colEle2)
             }
-            for (let i = 0; i < this.keyArray.length; i++) {
+            /* The last element is 'image' which contains back-end port.
+               It shouldn't be displayed. */
+            for (let i = 0; i < this.keyArray.length - 1; i++) {
                 dataItem = {}
                 for (let j = 0; j < this.valueArray.length + 1; j++) {
                     if (j === 0) {

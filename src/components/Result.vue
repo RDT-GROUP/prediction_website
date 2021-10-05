@@ -117,9 +117,9 @@ export default {
             columns: [{
                 field: '',
                 key: '',
-                title: '',
+                title: '#',
                 align: '',
-                fixed: 'left',
+                // fixed: 'left',
                 renderBodyCell: ({ row, column, rowIndex }, h) => {
                     return ++rowIndex
                 }
@@ -193,29 +193,48 @@ export default {
                 this.titleArray = Object.keys(json[i])
                 this.dataArray[i] = Object.values(json[i])
             }
-            for (let i = 0; i < this.titleArray.length; i++) {
+            for (let i = 0; i < this.titleArray.length - 1; i++) {
                 let colEle = {
                     field: '',
                     key: '',
                     title: '',
-                    align: '',
-                    fixed: ''
+                    align: ''
+                    // fixed: ''
                 }
                 colEle.field = this.titleArray[i]
                 colEle.key = this.titleArray[i]
                 colEle.title = this.titleArray[i]
                 colEle.align = 'center'
-                if (i === 0) {
-                    colEle.fixed = 'left'
-                }
+                // if (i === 0) {
+                //     colEle.fixed = 'left'
+                // }
                 this.columns.push(colEle)
             }
+            let imgSrc = [
+                {}
+            ]
+            let colEle = {
+                field: 'image',
+                key: 'image',
+                title: 'image',
+                align: 'center',
+                // fixed: 'left',
+                renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    return (
+                        <span>
+                            <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
+                        </span>
+                    )
+                }
+            }
+            this.columns.push(colEle)
             this.recordNum = this.dataArray.length
             for (let i = 0; i < this.dataArray.length; i++) {
                 let dataEle = {}
-                for (let j = 0; j < this.dataArray[i].length; j++) {
+                for (let j = 0; j < this.dataArray[i].length - 1; j++) {
                     dataEle[this.columns[j + 1].title] = this.dataArray[i][j]
                 }
+                imgSrc[i] = this.dataArray[i][this.dataArray[i].length - 1]
                 this.tableData.push(dataEle)
             }
         }
