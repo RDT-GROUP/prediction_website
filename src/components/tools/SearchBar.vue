@@ -8,7 +8,7 @@
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <select v-model="selected" @change="onChange()" class="btn btn-default dropdown-toggle" id="selectList">
-                                    <option v-for="option in options" :key="option.k" :value="option.v" :label="option.v"></option>
+                                    <option v-for="option in options" :key="option.k" :value="option.v" :label="option.v" style="text-align: left;"></option>
                                 </select>
                             </div>
                             <input class="form-control" id="iptBar" type="text" :placeholder="plch" v-model="searchContent" name="query">
@@ -72,7 +72,7 @@ export default {
                 {k: 1, v: 'Structure', plch: 'Enter SMILES'},
                 {k: 2, v: 'Similarity', plch: 'Enter SMILES'},
                 {k: 3, v: 'Prediction', plch: 'Enter SMILES'},
-                {k: 4, v: 'Name', plch: 'Enter SMILES/CAS-No./Pubchem ID'}
+                {k: 4, v: 'Text', plch: 'Enter SMILES/CAS-No./Pubchem ID'}
             ],
             selected: '',
             selectedValue: '',

@@ -18,23 +18,36 @@
         <div class="row" style="width: 100%;">
             <div class="col-md-1"></div>
             <div class="col-md-10">
-                <div class="showroom" v-if="urlQuery === ''">
-                    <h1>404 Page Not Found. <br/>
-                        Error: Empty query, please type in a query.</h1>
+                <div class="showroom"
+                     v-if="urlQuery === '' &&
+                           !(urlType !== '1' && urlType !== '2' && urlType !== '3' && urlType !== '4')">
+                    <h2>404 Page Not Found. <br/>
+                        Error: Empty query, please type in a correct query.</h2>
                 </div>
                 <div class="showroom"
-                     v-if="urlType !== '1' && urlType !== '2' && urlType !== '3' && urlType !== '4'">
-                    <h1>404 Page Not Found. <br/>
-                        Error: Wrong request type, please click one of the given buttons to search.</h1>
+                     v-if="(urlType !== '1' && urlType !== '2' && urlType !== '3' && urlType !== '4') &&
+                           urlQuery !== ''">
+                    <h2>404 Page Not Found. <br/>
+                        Error: Wrong request type, please select one item from the given list.</h2>
+                </div>
+                <div class="showroom"
+                     v-if="(urlType !== '1' && urlType !== '2' && urlType !== '3' && urlType !== '4') &&
+                           urlQuery === ''">
+                    <h2>404 Page Not Found. <br/>
+                        Error: Please select one item from the given list and type in a correct query.</h2>
                 </div>
                 <div class="showroom" v-if="jsonReturn === 'emptyJSON'">
-                    <h1>Warning: Empty return value, no results can be shown.</h1>
+                    <h2>Warning: Empty return value, no results can be shown.</h2>
+                </div>
+                <div class="showroom" v-if="jsonReturn === 'wrongQuery'">
+                    <h2>Warning: Wrong query, we cannot find any result.</h2>
                 </div>
                 <div class="showroom"
                      v-if="recordNum !== 0 &&
                            urlQuery !== '' &&
                            (urlType === '1' || urlType === '4') &&
-                           jsonReturn !== 'emptyJSON'">
+                           jsonReturn !== 'emptyJSON' &&
+                           jsonReturn !== 'wrongQuery'">
                     <ve-table
                         id="loading-container"
                         :columns="columns"
@@ -50,7 +63,8 @@
                      v-if="recordNum !== 0 &&
                            urlQuery !== '' &&
                            (urlType === '2' || urlType === '3') &&
-                           jsonReturn !== 'emptyJSON'">
+                           jsonReturn !== 'emptyJSON' &&
+                           jsonReturn !== 'wrongQuery'">
                     <ve-table
                         id="loading-container"
                         :columns="columns"
@@ -129,7 +143,7 @@ export default {
                 {k: '1', v: 'Structure'},
                 {k: '2', v: 'Similarity'},
                 {k: '3', v: 'Prediction'},
-                {k: '4', v: 'Name'}
+                {k: '4', v: 'Text'}
             ],
             searchType: ''
         }
@@ -188,55 +202,118 @@ export default {
         resolveJSON(json) {
             if (Object.keys(json).length === 0) {
                 this.jsonReturn = 'emptyJSON'
-            }
-            for (let i in json) {
-                this.titleArray = Object.keys(json[i])
-                this.dataArray[i] = Object.values(json[i])
-            }
-            for (let i = 0; i < this.titleArray.length - 1; i++) {
-                let colEle = {
-                    field: '',
-                    key: '',
-                    title: '',
-                    align: ''
-                    // fixed: ''
+            } else if (json === 'error') {
+                this.jsonReturn = 'wrongQuery'
+            } else {
+                for (let i in json) {
+                    this.titleArray = Object.keys(json[i])
+                    this.dataArray[i] = Object.values(json[i])
                 }
-                colEle.field = this.titleArray[i]
-                colEle.key = this.titleArray[i]
-                colEle.title = this.titleArray[i]
-                colEle.align = 'center'
-                // if (i === 0) {
-                //     colEle.fixed = 'left'
-                // }
-                this.columns.push(colEle)
-            }
-            let imgSrc = [
-                {}
-            ]
-            let colEle = {
-                field: 'image',
-                key: 'image',
-                title: 'image',
-                align: 'center',
-                // fixed: 'left',
-                renderBodyCell: ({ row, column, rowIndex }, h) => {
-                    return (
-                        <span>
-                            <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
-                        </span>
-                    )
+                let imgSrc = [{}]
+                // console.log(this.dataArray)
+                for (let i = 0; i < this.titleArray.length; i++) {
+                    let colEle = {}
+                    if (this.titleArray[i] !== 'image') {
+                        colEle = {
+                            field: '',
+                            key: '',
+                            title: '',
+                            align: ''
+                            // fixed: ''
+                        }
+                    } else {
+                        colEle = {
+                            field: '',
+                            key: '',
+                            title: '',
+                            align: '',
+                            // fixed: '',
+                            renderBodyCell: ({ row, column, rowIndex }, h) => {
+                                return (
+                                    <span>
+                                        <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
+                                    </span>
+                                )
+                            }
+                        }
+                    }
+                    colEle.field = this.titleArray[i]
+                    colEle.key = this.titleArray[i]
+                    colEle.title = this.titleArray[i]
+                    colEle.align = 'center'
+                    this.columns.push(colEle)
+                }
+                if (this.urlType === '1' || this.urlType === '4') {
+                    let colEleTmp = {
+                        field: '',
+                        key: 'Detail',
+                        title: 'Detail',
+                        align: '',
+                        renderBodyCell: ({ row, column, rowIndex }, h) => {
+                            return 'Click here to get Details'
+                        }
+                    }
+                    this.columns.push(colEleTmp)
+                }
+                this.recordNum = this.dataArray.length
+                for (let i = 0; i < this.dataArray.length; i++) {
+                    let dataEle = {}
+                    for (let j = 0; j < this.dataArray[i].length; j++) {
+                        dataEle[this.columns[j + 1].title] = this.dataArray[i][j]
+                    }
+                    imgSrc[i] = dataEle['image']
+                    // console.log(dataEle)
+                    this.tableData.push(dataEle)
                 }
             }
-            this.columns.push(colEle)
-            this.recordNum = this.dataArray.length
-            for (let i = 0; i < this.dataArray.length; i++) {
-                let dataEle = {}
-                for (let j = 0; j < this.dataArray[i].length - 1; j++) {
-                    dataEle[this.columns[j + 1].title] = this.dataArray[i][j]
-                }
-                imgSrc[i] = this.dataArray[i][this.dataArray[i].length - 1]
-                this.tableData.push(dataEle)
-            }
+            // for (let i in json) {
+            //     this.titleArray = Object.keys(json[i])
+            //     this.dataArray[i] = Object.values(json[i])
+            // }
+            // let imgSrc = [{}]
+            // // console.log(this.dataArray)
+            // for (let i = 0; i < this.titleArray.length; i++) {
+            //     let colEle = {}
+            //     if (this.titleArray[i] !== 'image') {
+            //         colEle = {
+            //             field: '',
+            //             key: '',
+            //             title: '',
+            //             align: ''
+            //             // fixed: ''
+            //         }
+            //     } else {
+            //         colEle = {
+            //             field: '',
+            //             key: '',
+            //             title: '',
+            //             align: '',
+            //             // fixed: '',
+            //             renderBodyCell: ({ row, column, rowIndex }, h) => {
+            //                 return (
+            //                     <span>
+            //                         <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
+            //                     </span>
+            //                 )
+            //             }
+            //         }
+            //     }
+            //     colEle.field = this.titleArray[i]
+            //     colEle.key = this.titleArray[i]
+            //     colEle.title = this.titleArray[i]
+            //     colEle.align = 'center'
+            //     this.columns.push(colEle)
+            // }
+            // this.recordNum = this.dataArray.length
+            // for (let i = 0; i < this.dataArray.length; i++) {
+            //     let dataEle = {}
+            //     for (let j = 0; j < this.dataArray[i].length; j++) {
+            //         dataEle[this.columns[j + 1].title] = this.dataArray[i][j]
+            //     }
+            //     imgSrc[i] = dataEle['image']
+            //     // console.log(dataEle)
+            //     this.tableData.push(dataEle)
+            // }
         }
     }
 }

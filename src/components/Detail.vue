@@ -10,7 +10,7 @@
         <div class="row" id="display" style="width: 100%;">
             <div class="col-md-1"></div>
             <div class="col-md-10">
-                <img :src="resImage" width="150px" height="150px" style="float: left;">
+                <img :src="resImage" width="200px" height="200px" style="float: left;">
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -143,7 +143,7 @@ export default {
             this.valueArray = Object.values(json)
             this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
                                 this.valueArray[3] + '.jpg'
-            console.log(json)
+            // console.log(json)
             // this.resImage = this.valueArray[0]
             var dataItem = {}
             /* Last element is 'ext' which contains a sub-json object.
@@ -163,7 +163,7 @@ export default {
             extDatas[this.columns[1].title] = this.valueArray[this.keyArray.length - 1]
             this.keyArray = Object.keys(extDatas['Data'][0])
             this.valueArray = []
-            console.log(extDatas)
+            // console.log(extDatas)
             for (let i = 0; i < extDatas['Data'].length; i++) {
                 this.valueArray.push(Object.values(extDatas['Data'][i]))
             }
