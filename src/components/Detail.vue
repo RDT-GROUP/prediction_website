@@ -16,7 +16,7 @@
         </div>
         <div class="row" id="display" style="width: 100%;">
             <div class="col-md-1"></div>
-            <div class="col-md-10" style="text-align: left"><p>Physiochemical Properties:</p></div>
+            <div class="col-md-10" style="text-align: left"><p>General Information:</p></div>
             <div class="col-md-1"></div>
         </div>
         <div class="row" style="width: 100%;">
@@ -38,8 +38,8 @@
         </div>
         <div class="row" id="display" style="width: 100%;">
             <div class="col-md-1"></div>
-            <div class="col-md-2" style="text-align: left"><p>Biotransformation:</p></div>
-            <div class="col-md-9"></div>
+            <div class="col-md-10" style="text-align: left"><p>Biotransformation Information:</p></div>
+            <div class="col-md-1"></div>
         </div>
         <div class="row" style="width: 100%;">
             <div class="col-md-1"></div>
@@ -121,46 +121,48 @@ export default {
             .then((res) => {
                 this.jsonContent = res.data
                 this.resolveJSON(this.jsonContent)
-                console.log(this.jsonContent)
+                // console.log(this.jsonContent)
             })
             .catch((err) => {
                 console.log(err)
             })
         },
         resolveJSON(json) {
-            this.columns = [{
-                field: 'Attr',
-                key: 'Attr',
-                title: 'Attr',
-                align: 'left'
-            }, {
-                field: 'Data',
-                key: 'Data',
-                title: 'Data',
-                align: 'left'
-            }]
             this.keyArray = Object.keys(json)
             this.valueArray = Object.values(json)
             this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
                                 this.valueArray[3] + '.jpg'
+            this.columns = [{
+                field: 'Attr',
+                key: 'Attr',
+                title: this.keyArray[0],
+                align: 'left'
+            }, {
+                field: 'Data',
+                key: 'Data',
+                title: this.valueArray[0],
+                align: 'left'
+            }]
             // console.log(json)
             // this.resImage = this.valueArray[0]
-            var dataItem = {}
+            /* The first element is set as the initial value of the header
+               of the table. */
             /* Last element is 'ext' which contains a sub-json object.
                Resolve this element in another table */
             /* Element before the last element is 'image' which contains
                back-end port. It shouldn't be displayed. */
-            for (let i = 0; i < this.keyArray.length - 2; i++) {
+            var dataItem = {}
+            for (let i = 1; i < this.keyArray.length - 2; i++) {
                 dataItem = {}
-                dataItem[this.columns[0].title] = this.keyArray[i]
-                dataItem[this.columns[1].title] = this.valueArray[i]
+                dataItem[this.columns[0].field] = this.keyArray[i]
+                dataItem[this.columns[1].field] = this.valueArray[i]
                 this.tableData.push(dataItem)
             }
 
             /* Resolve ext datas */
             var extDatas = {}
-            extDatas[this.columns[0].title] = this.keyArray[this.keyArray.length - 1]
-            extDatas[this.columns[1].title] = this.valueArray[this.keyArray.length - 1]
+            extDatas[this.columns[0].field] = this.keyArray[this.keyArray.length - 1]
+            extDatas[this.columns[1].field] = this.valueArray[this.keyArray.length - 1]
             this.keyArray = Object.keys(extDatas['Data'][0])
             this.valueArray = []
             // console.log(extDatas)
@@ -178,13 +180,13 @@ export default {
                 if (i === 0) {
                     colEle2.field = 'Attr'
                     colEle2.key = 'Attr'
-                    colEle2.title = 'Attr'
+                    colEle2.title = 'Attributes'
                     colEle2.align = 'left'
                     colEle2.fixed = 'left'
                 } else {
-                    colEle2.field = 'Data_' + i
-                    colEle2.key = 'Data_' + i
-                    colEle2.title = 'Data_' + i
+                    colEle2.field = 'Data ' + i
+                    colEle2.key = 'Data ' + i
+                    colEle2.title = 'Data ' + i
                     colEle2.align = 'left'
                 }
                 this.columns2.push(colEle2)
@@ -195,11 +197,12 @@ export default {
                 dataItem = {}
                 for (let j = 0; j < this.valueArray.length + 1; j++) {
                     if (j === 0) {
-                        dataItem[this.columns2[j].title] = this.keyArray[i]
+                        dataItem[this.columns2[j].field] = this.keyArray[i]
                     } else {
-                        dataItem[this.columns2[j].title] = this.valueArray[j - 1][i]
+                        dataItem[this.columns2[j].field] = this.valueArray[j - 1][i]
                     }
                 }
+                // console.log(dataItem)
                 this.tableData2.push(dataItem)
             }
         }

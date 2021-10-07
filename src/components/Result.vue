@@ -45,7 +45,7 @@
                 <div class="showroom"
                      v-if="recordNum !== 0 &&
                            urlQuery !== '' &&
-                           (urlType === '1' || urlType === '4') &&
+                           urlType !== '3' &&
                            jsonReturn !== 'emptyJSON' &&
                            jsonReturn !== 'wrongQuery'">
                     <ve-table
@@ -62,7 +62,7 @@
                 <div class="showroom"
                      v-if="recordNum !== 0 &&
                            urlQuery !== '' &&
-                           (urlType === '2' || urlType === '3') &&
+                           urlType === '3' &&
                            jsonReturn !== 'emptyJSON' &&
                            jsonReturn !== 'wrongQuery'">
                     <ve-table
@@ -104,14 +104,14 @@ export default {
                 bodyRowEvents: ({ row, rowIndex }) => {
                     return {
                         click: (event) => {
-                            console.log('click::', row, rowIndex, event)
+                            // console.log('click::', row, rowIndex, event)
                             this.$router.push({
                                 // path: '/detail/?query=' +
                                 //        encodeURIComponent(row.canonical_substrate_smiles) +
                                 //        '&id=' + row.pubchem_cid
                                 path: '/detail/?query=' +
-                                       encodeURIComponent(row.SMILES) +
-                                       '&id=' + row.Pubchem_CID
+                                       encodeURIComponent(row['SMILES']) +
+                                       '&id=' + row['Pubchem CID']
                             })
                         }
                     }
@@ -213,7 +213,7 @@ export default {
                 // console.log(this.dataArray)
                 for (let i = 0; i < this.titleArray.length; i++) {
                     let colEle = {}
-                    if (this.titleArray[i] !== 'image') {
+                    if (this.titleArray[i] !== 'Image') {
                         colEle = {
                             field: '',
                             key: '',
@@ -243,14 +243,14 @@ export default {
                     colEle.align = 'center'
                     this.columns.push(colEle)
                 }
-                if (this.urlType === '1' || this.urlType === '4') {
+                if (this.urlType !== '3') {
                     let colEleTmp = {
                         field: '',
                         key: 'Detail',
                         title: 'Detail',
                         align: '',
                         renderBodyCell: ({ row, column, rowIndex }, h) => {
-                            return 'Click here to get Details'
+                            return <span style="color: blue; text-decoration: underline;">Click here to get Details</span>
                         }
                     }
                     this.columns.push(colEleTmp)
@@ -261,7 +261,7 @@ export default {
                     for (let j = 0; j < this.dataArray[i].length; j++) {
                         dataEle[this.columns[j + 1].title] = this.dataArray[i][j]
                     }
-                    imgSrc[i] = dataEle['image']
+                    imgSrc[i] = dataEle['Image']
                     // console.log(dataEle)
                     this.tableData.push(dataEle)
                 }

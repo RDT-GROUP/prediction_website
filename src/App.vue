@@ -119,7 +119,7 @@ export default {
   margin-top: 25px;
   /* position: absolute;
   bottom: -100vh; */
-  color: azure;
+  color: white;
   font-size: 15px;
   text-align: justify;
   font-family: Helvetica, Montserrat, Roboto;
@@ -134,25 +134,25 @@ export default {
   vertical-align: middle;
 }
 a:link {
-  color: azure;
+  color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
 a:visited {
-  color: azure;
+  color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
 a:hover {
-  color: azure;
+  color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
 a:active {
-  color: azure;
+  color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;

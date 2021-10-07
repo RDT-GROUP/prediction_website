@@ -3,7 +3,7 @@
         <div id="SearchBar">
             <form :action="resultURL" method="get" id="form" class="form">
                 <div class="row">
-                    <div class="col-md-1"></div>
+                    <div class="col-md-1"><!--p>{{ plch }}</p--></div>
                     <div class="col-md-10">
                         <div class="input-group">
                             <div class="input-group-btn">
@@ -136,7 +136,7 @@ export default {
 } */
 #searchBtn {
     background-color: #4a593c;
-    color: azure;
+    color: white;
     /* border: 1px #4a593c; */
     border-color: #4a593c;
     font-size: 18px;
