@@ -36,7 +36,7 @@
         <div class="col-md-1"></div>
     </div>
     <div class="row">
-        <!-- <img id="bgimg" src="http://www.rxnfinder.org/static/toxindb/images/back_toxin.jpg"> -->
+        <img id="bgimg" src="http://www.rxnfinder.org/static/toxindb/images/back_toxin.jpg">
     </div>
 </div>
 </template>
@@ -79,6 +79,6 @@ export default {
     /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
     font-family: Helvetica, Montserrat, Roboto;
     /* text-shadow: 1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black, -1px 1px 0 black; */
-    border: #FFFFFF solid 1px;
+    /* border: #FFFFFF solid 1px; */
 }
 </style>

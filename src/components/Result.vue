@@ -45,6 +45,21 @@
                 <div class="showroom"
                      v-if="recordNum !== 0 &&
                            urlQuery !== '' &&
+                           jsonReturn !== 'emptyJSON' &&
+                           jsonReturn !== 'wrongQuery'">
+                    <ve-table
+                        id="loading-container"
+                        :columns="columns"
+                        :table-data="tableData"
+                        :border-x="true"
+                        :border-y="true"
+                        :fixed-header="true"
+                        :row-style-option="rowStyleOption">
+                    </ve-table>
+                </div>
+                <!-- <div class="showroom"
+                     v-if="recordNum !== 0 &&
+                           urlQuery !== '' &&
                            urlType !== '3' &&
                            jsonReturn !== 'emptyJSON' &&
                            jsonReturn !== 'wrongQuery'">
@@ -74,7 +89,7 @@
                         :fixed-header="true"
                         :row-style-option="rowStyleOption">
                     </ve-table>
-                </div>
+                </div> -->
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -100,24 +115,26 @@ export default {
             rowStyleOption: {
                 stripe: true
             },
-            eventCustomOption: {
-                bodyRowEvents: ({ row, rowIndex }) => {
-                    return {
-                        click: (event) => {
-                            // console.log('click::', row, rowIndex, event)
-                            this.$router.push({
-                                // path: '/detail/?query=' +
-                                //        encodeURIComponent(row.canonical_substrate_smiles) +
-                                //        '&id=' + row.pubchem_cid
-                                path: '/detail/?query=' +
-                                       encodeURIComponent(row['SMILES']) +
-                                       '&id=' + row['Pubchem CID']
-                            })
-                        }
-                    }
-                }
-            },
+            // eventCustomOption: {
+                // bodyRowEvents: ({ row, rowIndex }) => {
+                //     return {
+                //         click: (event) => {
+                //             // console.log('click::', row, rowIndex, event)
+                //             this.$router.push({
+                //                 // path: '/detail/?query=' +
+                //                 //        encodeURIComponent(row.canonical_substrate_smiles) +
+                //                 //        '&id=' + row.pubchem_cid
+                //                 path: '/detail/?query=' +
+                //                        encodeURIComponent(row['SMILES']) +
+                //                        '&id=' + row['Pubchem CID']
+                //             })
+                //         }
+                //     }
+                // }
+            // },
             loadingInstance: null,
+            urlBase: 'http://1.117.57.232',
+            urlPort: '8080',
             urlQuery: '',
             urlType: '',
             jsonReturn: '',
@@ -173,12 +190,10 @@ export default {
     },
     methods: {
         getJSON() {
-            let urlBase = 'http://1.117.57.232'
-            let urlPort = '8080'
             let query = this.$route.query.query
             let urlQuery = encodeURIComponent(query)
             let urlType = this.$route.query.type
-            let url = urlBase + ':' + urlPort + '/result/?query=' +
+            let url = this.urlBase + ':' + this.urlPort + '/result/?query=' +
                       urlQuery + '&type=' + urlType
             // this.resImage = urlBase + ':' + urlPort + '/' + 'media/' +
             //                     urlQuery + '.jpg'
@@ -244,17 +259,31 @@ export default {
                     this.columns.push(colEle)
                 }
                 if (this.urlType !== '3') {
+                    let linkURLHeader = this.urlBase + '/detail/?query='
                     let colEleTmp = {
                         field: '',
                         key: 'Detail',
                         title: 'Detail',
                         align: '',
                         renderBodyCell: ({ row, column, rowIndex }, h) => {
-                            return <span style="color: blue; text-decoration: underline;">Click here to get Details</span>
+                            let linkURL = linkURLHeader + encodeURIComponent(row['SMILES']) + '&id=' + row['Pubchem CID']
+                            return <a href={linkURL}><span style="text-decoration: underline;">Click here to get Details</span></a>
                         }
                     }
                     this.columns.push(colEleTmp)
                 }
+                // if (this.urlType !== '3') {
+                //     let colEleTmp = {
+                //         field: '',
+                //         key: 'Detail',
+                //         title: 'Detail',
+                //         align: '',
+                //         renderBodyCell: ({ row, column, rowIndex }, h) => {
+                //             return <span style="color: blue; text-decoration: underline;">Click here to get Details</span>
+                //         }
+                //     }
+                //     this.columns.push(colEleTmp)
+                // }
                 this.recordNum = this.dataArray.length
                 for (let i = 0; i < this.dataArray.length; i++) {
                     let dataEle = {}

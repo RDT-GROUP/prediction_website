@@ -13,7 +13,7 @@
               </div>
               <div class="col-xs-11" style="height:75px; line-height: 75px;">
                 <h1 style="margin: 0 auto; line-height: 75px;">
-                <a href="/">
+                <a href="/" id="titleLink">
                   <span>EcoBioTrans</span>
                 </a>
               </h1>
@@ -26,7 +26,7 @@
     </div>
     <div class="row">
       <!-- <div class="col-md-12" style="width: 100%;"> -->
-        <div class="col-md-12" :style="contentStyleObj">
+        <div class="col-md-12" :style="contentStyleObj" id="pageBody">
         <div id="app">
           <router-view/>
         </div>
@@ -112,18 +112,23 @@ export default {
   width: 100%;
   height: 75px;
 }
+/* #pageBody {
+  background: url("http://www.rxnfinder.org/static/toxindb/images/back_toxin.jpg") no-repeat left;
+  background-size: 100%;
+  position: cover;
+} */
 #footer {
   background: #94AA81;
   width: 100%;
   /* height: 350px; */
-  margin-top: 25px;
+  /* margin-top: 25px; */
   /* position: absolute;
   bottom: -100vh; */
   color: white;
   font-size: 15px;
   text-align: justify;
   font-family: Helvetica, Montserrat, Roboto;
-  border: #FFFFFF solid 1px;
+  /* border: #FFFFFF solid 1px; */
 }
 #logo {
   /* margin: 0 0 0 0; */
@@ -133,25 +138,25 @@ export default {
   line-height: 75px;
   vertical-align: middle;
 }
-a:link {
+#titleLink:link {
   color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
-a:visited {
+#titleLink:visited {
   color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
-a:hover {
+#titleLink:hover {
   color: white;
   text-decoration: none;
   font-size: 50px;
   font-weight: bold;
 }
-a:active {
+#titleLink:active {
   color: white;
   text-decoration: none;
   font-size: 50px;
