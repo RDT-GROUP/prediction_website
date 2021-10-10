@@ -36,7 +36,7 @@
         <div class="col-md-1"></div>
     </div>
     <div class="row">
-        <img id="bgimg" src="http://www.rxnfinder.org/static/toxindb/images/back_toxin.jpg">
+        <!-- <img id="bgimg" src="http://www.rxnfinder.org/static/toxindb/images/back_toxin.jpg"> -->
     </div>
 </div>
 </template>
