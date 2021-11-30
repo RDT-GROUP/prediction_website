@@ -93,6 +93,7 @@
             </div>
             <div class="col-md-1"></div>
         </div>
+        <div class="row" id="display" style="width: 100%;"><p>&nbsp;</p></div>
     </div>
 </template>
 
@@ -220,12 +221,19 @@ export default {
             } else if (json === 'error') {
                 this.jsonReturn = 'wrongQuery'
             } else {
+                // console.log(json)
+                let tmpFieldLenth = 0
                 for (let i in json) {
-                    this.titleArray = Object.keys(json[i])
+                    if (tmpFieldLenth < Object.keys(json[i]).length) {
+                        tmpFieldLenth = Object.keys(json[i]).length
+                        this.titleArray = Object.keys(json[i])
+                    }
                     this.dataArray[i] = Object.values(json[i])
                 }
                 let imgSrc = [{}]
                 // console.log(this.dataArray)
+                // console.log(this.urlType)
+                // console.log(this.titleArray)
                 for (let i = 0; i < this.titleArray.length; i++) {
                     let colEle = {}
                     if (this.titleArray[i] !== 'Image') {
@@ -246,7 +254,7 @@ export default {
                             renderBodyCell: ({ row, column, rowIndex }, h) => {
                                 return (
                                     <span>
-                                        <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
+                                        <img src={imgSrc[rowIndex]} width="150px" height="150px" alt=""></img>
                                     </span>
                                 )
                             }
@@ -258,6 +266,8 @@ export default {
                     colEle.align = 'center'
                     this.columns.push(colEle)
                 }
+                // console.log(this.urlType)
+                // console.log(this.titleArray)
                 if (this.urlType !== '3') {
                     let linkURLHeader = this.urlBase + '/detail/?query='
                     let colEleTmp = {

@@ -45,7 +45,8 @@
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 <div class="showroom2">
-                    <ve-table   :columns="columns2"
+                    <ve-table   id="loading-container"
+                                :columns="columns2"
                                 :table-data="tableData2"
                                 :border-x="true"
                                 :border-y="true"
@@ -54,6 +55,18 @@
                                 >
                     </ve-table>
                 </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row" id="display" style="width: 100%;">
+            <div class="col-md-1"></div>
+            <div class="col-md-10" style="text-align: left"><p>Biotransformation Pathway:</p></div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row" id="display" style="width: 100%;">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <img :src="resImage2" style="float: left;">
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -80,9 +93,11 @@ export default {
             rowStyleOption: {
                 stripe: true
             },
+            loadingInstance: null,
             jsonContent: '',
             resData: '',
             resImage: '',
+            resImage2: '',
             urlBase: '',
             urlPort: '',
             reqId: '',
@@ -91,7 +106,16 @@ export default {
             valueArray: [],
             columns: [],
             tableData: [],
-            columns2: [],
+            columns2: [{
+                field: '#',
+                key: '#',
+                title: '#',
+                align: '',
+                fixed: 'left',
+                renderBodyCell: ({ row, column, rowIndex }, h) => {
+                    return ++rowIndex
+                }
+            }],
             tableData2: []
         }
     },
@@ -103,6 +127,16 @@ export default {
     },
     mounted() {
         this.getJSON()
+        this.loadingInstance = this.$veLoading({
+            target: document.querySelector('#loading-container'),
+            name: 'wave',
+            tip: 'Your results will be available when the calculation is done, please wait...',
+            color: '#94AA81'
+        })
+        this.loadingInstance.show()
+    },
+    updated() {
+        this.loadingInstance.close()
     },
     methods: {
         getJSON() {
@@ -132,6 +166,8 @@ export default {
             this.valueArray = Object.values(json)
             this.resImage = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
                                 this.valueArray[3] + '.jpg'
+            this.resImage2 = this.urlBase + ':' + this.urlPort + '/' + 'media/' +
+                                this.reqId + '.dot.png'
             this.columns = [{
                 field: 'Attr',
                 key: 'Attr',
@@ -143,15 +179,13 @@ export default {
                 title: this.valueArray[0],
                 align: 'left'
             }]
-            // console.log(json)
-            // this.resImage = this.valueArray[0]
+            var dataItem = {}
             /* The first element is set as the initial value of the header
                of the table. */
             /* Last element is 'ext' which contains a sub-json object.
                Resolve this element in another table */
             /* Element before the last element is 'image' which contains
                back-end port. It shouldn't be displayed. */
-            var dataItem = {}
             for (let i = 1; i < this.keyArray.length - 2; i++) {
                 dataItem = {}
                 dataItem[this.columns[0].field] = this.keyArray[i]
@@ -160,50 +194,117 @@ export default {
             }
 
             /* Resolve ext datas */
-            var extDatas = {}
-            extDatas[this.columns[0].field] = this.keyArray[this.keyArray.length - 1]
-            extDatas[this.columns[1].field] = this.valueArray[this.keyArray.length - 1]
-            this.keyArray = Object.keys(extDatas['Data'][0])
-            this.valueArray = []
+            // var extDatas = {}
+            // extDatas[this.columns[0].field] = this.keyArray[this.keyArray.length - 1]
+            // extDatas[this.columns[1].field] = this.valueArray[this.keyArray.length - 1]
+            // this.keyArray = Object.keys(extDatas['Data'][0])
+            // this.valueArray = []
             // console.log(extDatas)
-            for (let i = 0; i < extDatas['Data'].length; i++) {
-                this.valueArray.push(Object.values(extDatas['Data'][i]))
-            }
-            for (let i = 0; i < this.valueArray.length + 1; i++) {
-                let colEle2 = {
-                    field: '',
-                    key: '',
-                    title: '',
-                    align: '',
-                    fixed: ''
-                }
-                if (i === 0) {
-                    colEle2.field = 'Attr'
-                    colEle2.key = 'Attr'
-                    colEle2.title = 'Attributes'
-                    colEle2.align = 'left'
-                    colEle2.fixed = 'left'
-                } else {
-                    colEle2.field = 'Data ' + i
-                    colEle2.key = 'Data ' + i
-                    colEle2.title = 'Data ' + i
-                    colEle2.align = 'left'
-                }
-                this.columns2.push(colEle2)
-            }
+            // for (let i = 0; i < extDatas['Data'].length; i++) {
+            //     this.valueArray.push(Object.values(extDatas['Data'][i]))
+            // }
+            // for (let i = 0; i < this.valueArray.length + 1; i++) {
+            //     let colEle2 = {
+            //         field: '',
+            //         key: '',
+            //         title: '',
+            //         align: '',
+            //         fixed: ''
+            //     }
+            //     if (i === 0) {
+            //         colEle2.field = 'Attr'
+            //         colEle2.key = 'Attr'
+            //         colEle2.title = 'Attributes'
+            //         colEle2.align = 'left'
+            //         colEle2.fixed = 'left'
+            //     } else {
+            //         colEle2.field = 'Data ' + i
+            //         colEle2.key = 'Data ' + i
+            //         colEle2.title = 'Data ' + i
+            //         colEle2.align = 'left'
+            //     }
+            //     this.columns2.push(colEle2)
+            // }
             /* The last element is 'image' which contains back-end port.
                It shouldn't be displayed. */
-            for (let i = 0; i < this.keyArray.length - 1; i++) {
-                dataItem = {}
-                for (let j = 0; j < this.valueArray.length + 1; j++) {
-                    if (j === 0) {
-                        dataItem[this.columns2[j].field] = this.keyArray[i]
+            // for (let i = 0; i < this.keyArray.length - 1; i++) {
+            //     dataItem = {}
+            //     for (let j = 0; j < this.valueArray.length + 1; j++) {
+            //         if (j === 0) {
+            //             dataItem[this.columns2[j].field] = this.keyArray[i]
+            //         } else {
+            //             dataItem[this.columns2[j].field] = this.valueArray[j - 1][i]
+            //         }
+            //     }
+            //     // console.log(dataItem)
+            //     this.tableData2.push(dataItem)
+            // } //竖表
+
+            /* Resolve ext datas */
+            var extDatas = this.valueArray[this.valueArray.length - 1]
+            let extKeyArray = {}
+            let extValueArray = [{}]
+            for (let i in extDatas) {
+                extKeyArray = Object.keys(extDatas[i])
+                extValueArray[i] = Object.values(extDatas[i])
+            }
+            let imgSrc = [{}]
+            for (let i = 0; i < extKeyArray.length; i++) {
+                let colEle = {}
+                if (extKeyArray[i] !== 'Image') {
+                    if (i <= 1) {
+                        colEle = {
+                            field: '',
+                            key: '',
+                            title: '',
+                            align: 'center',
+                            fixed: 'left'
+                        }
+                    } else if (i === 8) {
+                        colEle = {
+                            field: '',
+                            key: '',
+                            title: '',
+                            align: 'center',
+                            sortBy: ''
+                        }
                     } else {
-                        dataItem[this.columns2[j].field] = this.valueArray[j - 1][i]
+                        colEle = {
+                            field: '',
+                            key: '',
+                            title: '',
+                            align: 'center'
+                        }
+                    }
+                } else {
+                    colEle = {
+                        field: '',
+                        key: '',
+                        title: '',
+                        align: 'center',
+                        renderBodyCell: ({ row, column, rowIndex }, h) => {
+                            return (
+                                <span>
+                                    <img src={imgSrc[rowIndex]} width="150px" height="150px"></img>
+                                </span>
+                            )
+                        }
                     }
                 }
-                // console.log(dataItem)
-                this.tableData2.push(dataItem)
+                // console.log(extKeyArray[8])
+                colEle.field = extKeyArray[i]
+                colEle.key = extKeyArray[i]
+                colEle.title = extKeyArray[i]
+                this.columns2.push(colEle)
+            }
+            for (let i = 0; i < extValueArray.length; i++) {
+                // console.log(this.columns2[0].title)
+                let dataEle = {}
+                for (let j = 0; j < extValueArray[i].length; j++) {
+                    dataEle[this.columns2[j + 1].title] = extValueArray[i][j]
+                }
+                imgSrc[i] = dataEle['Image']
+                this.tableData2.push(dataEle)
             }
         }
     }
